@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+
+{% block contant %}
+    <div class="container">
+		<div class="error"></div>
+		<form>
+            {% csrf_token %}
+            
+  
+			<div class="form-heading">Mobile Number Verification</div>
+            <div class="mb-3">
+                <label for="mobile" class="form-label">number:</label>
+                <input type="number"  id="mobile" class="form-control" aria-describedby="passwordHelpInline">
+                <div id="passwordHelpInline" class="form-text">Only 10 digit mobile.</div>
+            </div>
+			<input type="button" class="btn btn-primary" value="Send OTP"
+				onClick="sendOTP();">
+		</form>
+	</div>
+
+    <script>
+
+            function sendOTP() {
+                console.log("start......")
+                $(".error").html("").hide();
+                var number = $("#mobile").val();
+                url = {% url 'generate_otp' %}
+                verify_url = {% url 'verify_otp' %}
+                
+                if (number.length == 10 && number != null) {
+                    var input = {
+                        "mobile_number" : number,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        
+                    };
+                    $.ajax({
+                        type : 'POST',
+                        url : url,
+                        data : input,
+                        success : function(data) {
+                            window.location.href = verify_url
+                            console.log("success")
+                            
+                        }
+                    });
+                } else {
+                    $(".error").html('Please enter a valid number!')
+                    $(".error").show();
+                }
+            }   
+            
+            </script>
+        
+
+{% endblock contant %}

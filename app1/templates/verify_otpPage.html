@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+
+{% block contant %}
+
+<div class="error"></div>
+<div class="success"></div>
+
+<form>
+    {% csrf_token %}
+
+  <div class="mb-3">
+        <label for="mobileOtp" class="form-label">OTP:</label>
+        <input type="number"  id="mobileOtp" class="form-control" aria-describedby="passwordHelpInline">
+        <div id="passwordHelpInline" class="form-text">We'll never share your OTP with anyone else.</div>
+    </div>
+        <input id="verify" type="button" class="btn btn-primary" value="Verify" onClick="verifyOTP();">		
+
+  </form>
+
+
+
+<h5>your otp is :{{current_otp}}</h5>
+<h5>your number is :{{number}}</h5>
+
+
+<script> 
+    function verifyOTP() {
+        $(".error").html("").hide();
+        $(".success").html("").hide();
+        var otp = $("#mobileOtp").val();
+        url = {% url 'verify_otp' %}
+        var input = {
+            "otp" : otp,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            
+        };
+        if (otp.length == 6 && otp != null) {
+            $.ajax({
+                url : url ,
+                type : 'POST',
+                data : input,
+                success : function(response) {
+                    console.log("success")
+                    
+                },
+                error : function() {
+                    alert("invalid");
+                }
+            });
+        } else {
+            $(".error").html('You have entered wrong OTP.')
+            $(".error").show();
+        }
+    }
+
+
+
+</script>
+
+
+
+
+{% endblock contant %}
+
+
+
+
